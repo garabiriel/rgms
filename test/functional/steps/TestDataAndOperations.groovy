@@ -798,18 +798,19 @@ class TestDataAndOperations {
         researchGroupController.response.reset()
     }
 
-    static public ResearchGroup editResearchGroupTwitterAcount(researchGroup, String newTwitter){
-        def researchGroupController = new ResearchGroupController()
-        researchGroupController.params << [twitter: newTwitter] << [id: researchGroup.getId()]
-        researchGroupController.update()
-        researchGroupController.response.reset()
-    }
-
     static public void ShareArticleOnFacebook(String title){
        def member = new Member()
         member.access_token =  "CAAJIlmRWCUwBAN0r1puBTUa4vDZAKxWWlR5gN4qtgZAosBDKGUOLBquyKuHYQ0zxICioiarTJ66mpdZC08U4rHJOrtvXJCB8hMBcLKlQaTdwYZCgMTJtbFnQfIBZAxi6hRIkfw2fCSyCS6DuFIrGRThI53ZCzBOLsZD"
         member.facebook_id = "100006411132660"
         PublicationController.sendPostFacebook(member, title)
+    }
+
+    static public ResearchGroup editResearchGroupTwitterAcount(researchGroup, String newTwitter){
+        def researchGroupController = new ResearchGroupController()
+        researchGroupController.params << [twitter: newTwitter] << [id: researchGroup.getId()]
+        researchGroupController.update()
+        researchGroupController.response.reset()
+        return researchGroup
     }
 
     static public void createTechnicalReportWithEmptyInstitution(String title, filename) {
@@ -821,6 +822,13 @@ class TestDataAndOperations {
         cont.create()
         cont.save()
         cont.response.reset()
+    }
+
+    static public boolean checkExistingNews(String description, String date, String group){
+        Date dateAsDateObj = Date.parse("dd-MM-yyyy", date)
+        def researchGroup = TestDataAndOperations.createAndGetResearchGroupByName(group)
+        def news = News.findByDescriptionAndDateAndResearchGroup(description, dateAsDateObj, researchGroup)
+        return news != null
     }
 
     static public String getTestFilesPath(String filename){
