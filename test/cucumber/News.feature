@@ -4,6 +4,7 @@ Feature: news
   I want to publish, remove and modify news about our researches, schedule and any other thing.
   Jointly this I want too integrate an twitter account to publish news into RGMS system.
 
+  #Controller tests
   Scenario: new news
     Given the system has no news with description "noticia1teste" and date "07-04-2012" for "SPG" research group
     When I create a news with description "noticia1teste" and date "07-04-2012" for "SPG" research group
@@ -26,7 +27,6 @@ Feature: news
     Given the research group "SPG" in the system has no Twitter account associated
     When I associate the account "@HumanBrainProj" to "SPG" group
     Then "SPG" research group has a twitter account "@HumanBrainProj" registered
-    #Then the news can be retrieved by a Twitter post with "@testetwitteracount"
 
   Scenario: update news from twitter account
     Given the research group "SPG" in the system has a Twitter account "@HumanBrainProj" associated
@@ -39,3 +39,13 @@ Feature: news
     And   twitter account associated with "SPG" research group has been updated once
     When  I request to update the news from Twitter to research group "SPG"
     Then  there is no duplicated news in Twitter account associated with research group "SPG"
+
+  #GUI tests
+  Scenario: new valid news
+    Given   I am at the news page
+    And     the research group "SPG" exists in the system
+    And     the system has no news with description "RGMS agora tem News" and date "07-04-2012" for "SPG" research group
+    When 	I select the new news button
+    And     I fill the news description with text "RGMS agora tem News" and date "07-04-2012" for "SPG" research group
+    And 	I select the save news button
+    Then    The news with description "RGMS agora tem News" and date "07-04-2012" for "SPG" research group details page is shown

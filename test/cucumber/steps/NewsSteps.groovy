@@ -1,3 +1,8 @@
+import pages.LoginPage
+import pages.NewsPages.NewsCreatePage
+import pages.NewsPages.NewsPage
+import pages.NewsPages.NewsShowPage
+import pages.PublicationsPage
 import rgms.member.ResearchGroup
 import rgms.news.News
 import steps.TestDataAndOperations
@@ -116,4 +121,40 @@ And(~'^the research group "([^"]*)" news list is empty$'){ String groupName ->
     newsByResearchGroup = News.getCurrentNews(researchGroup)
     assert newsByResearchGroup != null
     assert newsByResearchGroup.size() == 0
+}
+
+Given(~'^I am at the news page$'){ ->
+    to LoginPage
+    at LoginPage
+    page.fillLoginData("admin", "adminadmin")
+    at PublicationsPage
+    page.select("News")
+    at NewsPage
+}
+
+Given(~'^the research group "([^"]*)" exists in the system$'){String  researchGroupName ->
+    researchGroupinstance = TestDataAndOperations.createAndGetResearchGroupByName(researchGroupName)
+    assert researchGroupinstance != null
+}
+
+When(~'^I select the new news button$'){ ->
+    page.selectNewsNews()
+    at NewsCreatePage
+}
+
+When(~'^I fill the news description with text "([^"]*)" and date "([^"]*)" for "([^"]*)" research group$') { String description, String date, String researchGroupName ->
+    Date dateAsDateObj = Date.parse("dd-MM-yyyy", date)
+    def researchGroupinstance = ResearchGroup.findByName(researchGroupName)
+    assert researchGroupinstance != null
+    assert researchGroupinstance.name ==  researchGroupName
+    page.fillNewsDetails(description,dateAsDateObj,researchGroupinstance)
+}
+
+When(~'^I select the save news button$') { ->
+    page.selectCreateNews()
+
+}
+
+Then(~'^The news with description "([^"]*)" and date "([^"]*)" for "([^"]*)" research group details page is shown$') { String arg1, String arg2, String arg3 ->
+    at NewsShowPage
 }
